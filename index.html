@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TonobilMaroc - Premium Auto Marketplace</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #2a2a72;
+            --secondary: #009ffd;
+            --accent: #ffd700;
+            --dark: #1a1a1a;
+            --light: #ffffff;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(42, 42, 114, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 159, 253, 0.4) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            background: linear-gradient(to right, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #ffffff99;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .car-container {
+            text-align: center;
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .car-image {
+            max-width: 800px;
+            filter: drop-shadow(0 0 30px rgba(0, 159, 253, 0.3));
+            animation: carFloat 6s ease-in-out infinite;
+        }
+
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at center, rgba(0, 159, 253, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        @keyframes carFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(0.5deg); }
+            75% { transform: translateY(10px) rotate(-0.5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 4rem 0;
+        }
+
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 159, 253, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-telegram {
+            background: #0088cc;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 159, 253, 0.6);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .contact-info {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-info h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-info a {
+            color: var(--light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-info a:hover {
+            color: var(--secondary);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .car-image {
+                max-width: 90%;
+            }
+
+            .feature-card {
+                margin: 1rem 0;
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="gradient-overlay"></div>
+    <div class="container">
+        <header class="animate__animated animate__fadeInDown">
+            <div class="logo">TonobilMaroc</div>
+            <p class="tagline">Découvrez l'excellence automobile au Maroc - Votre destination premium pour l'achat et la vente de véhicules</p>
+        </header>
+
+        <div class="car-container animate__animated animate__fadeInUp">
+            <div class="glow"></div>
+            <img src="/api/placeholder/800/500" alt="Voiture Premium" class="car-image">
+        </div>
+
+        <div class="buttons-container">
+            <a href="#vendre" class="btn btn-primary animate__animated animate__fadeInLeft">
+                <i class="fas fa-car-side"></i>
+                Vendre Votre Voiture
+            </a>
+            <a href="#acheter" class="btn btn-secondary animate__animated animate__fadeInUp">
+                <i class="fas fa-search"></i>
+                Acheter une Voiture
+            </a>
+            <a href="https://t.me/tonobilmaroc" class="btn btn-telegram animate__animated animate__fadeInRight">
+                <i class="fab fa-telegram-plane"></i>
+                Notifications Telegram
+            </a>
+        </div>
+
+        <div class="features">
+            <div class="feature-card animate__animated animate__fadeIn">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <h3>Transactions Sécurisées</h3>
+                <p>Processus de vente et d'achat 100% sécurisé</p>
+            </div>
+            <div class="feature-card animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+                <i class="fas fa-star feature-icon"></i>
+                <h3>Véhicules Premium</h3>
+                <p>Sélection exclusive de véhicules de qualité</p>
+            </div>
+            <div class="feature-card animate__animated animate__fadeIn" style="animation-delay: 0.4s">
+                <i class="fas fa-clock feature-icon"></i>
+                <h3>Service Rapide</h3>
+                <p>Processus simplifié et efficace</p>
+            </div>
+        </div>
+
+        <div class="contact-info animate__animated animate__fadeIn">
+            <h3>Contactez Notre Équipe</h3>
+            <p>Email: <a href="mailto:abdellatif@tonobilmaroc.com">abdellatif@tonobilmaroc.com</a></p>
+        </div>
+
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down" style="color: var(--accent);"></i>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Animate features on scroll
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = 'all 0.6s ease-out';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
