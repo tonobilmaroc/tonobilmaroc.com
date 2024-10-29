@@ -66,11 +66,15 @@
             margin-bottom: 20px;
             font-size: 2.5em;
         }
+        .logo {
+            width: 100px; /* Adjust size as necessary */
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Encoded ID Display</h1>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Flag_of_Morocco.svg/800px-Flag_of_Morocco.svg.png" alt="Morocco Logo" class="logo">
         <span class="reveal" onclick="toggleVisibility()">👁️</span>
         <div id="idDisplay" class="id-display hidden"></div>
     </div>
@@ -111,7 +115,7 @@
             const idDisplay = document.getElementById("idDisplay");
             if (id) {
                 const decodedValue = base62Decode(id);
-                idDisplay.textContent = decodedValue;
+                idDisplay.textContent = decodedValue.toString().padStart(11, '0'); // Pad with leading zeros
             }
         }
     </script>
