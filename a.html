@@ -3,60 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
+    <title>Car Listing Details</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #e0f7fa; /* Light cyan background */
-            overflow: hidden;
-            position: relative;
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: #f9fafb;
+            color: #1f2937;
         }
-        .car {
-            width: 150px; /* Adjust the size of the car */
-            position: absolute;
-            animation: moveCar 2s infinite alternate; /* Animation for the car */
+
+        .loading, .error {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
         }
-        @keyframes moveCar {
-            0% { left: 0; }
-            100% { left: calc(100% - 150px); } /* Move car across the screen */
+
+        .error {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
         }
-        @keyframes backgroundAnimation {
-            0% { background-color: #e0f7fa; }
-            50% { background-color: #b2ebf2; }
-            100% { background-color: #e0f7fa; }
+
+        .retry-button {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1rem;
+            transition: background-color 0.3s;
         }
-        .background {
-            position: absolute;
+
+        .retry-button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .car-details {
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .car-details h1 {
+            color: #1f2937;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-price {
+            font-size: 1.75rem;
+            color: #059669;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .car-info, .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .car-info-item, .contact-info-item {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .section-title {
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            color: #374151;
+            font-size: 1.25rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .feature-item {
+            padding: 0.5rem;
+            background-color: #f3f4f6;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+
+        .car-description {
+            line-height: 1.6;
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: #4b5563;
+        }
+
+        .car-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .car-image {
             width: 100%;
-            height: 100%;
-            animation: backgroundAnimation 4s infinite; /* Smooth background animation */
-            z-index: -1; /* Place background behind the car */
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.5rem;
         }
     </style>
 </head>
 <body>
-    <div class="background"></div>
-    <img src="images-removebg-preview.png" alt="Car" class="car" id="car">
-    
+    <div id="app">
+        <div class="loading">Loading car details...</div>
+    </div>
+
     <script>
-        // Extract the id from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
+            // Get the current URL
+            const url = new URL(window.location.href);
+            // Use the searchParams property to get the 'id' parameter
+        
+        const LIST_ID = url.searchParams.get('id');// 55647583;
+        const BASE_URL = 'https://www.avito.ma';
+        
+        const CORS_PROXIES = [
+            'https://api.allorigins.win/get?url=',
+            'https://corsproxy.io/?',
+            'https://proxy.cors.sh/'
+        ];
 
-        // Assuming <text> is predefined or can be derived from some source
-        const text = "voitures_d'occasion"; // Change this as needed
+        const commonHeaders = {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        };
 
-        // Construct the redirect URL
-        const redirectUrl = `https://www.avito.ma/fr/californie/voitures_d'occasion/${text}_${id}.htm`;
+        async function tryFetchWithProxy(url, proxyUrl) {
+            try {
+                const response = await fetch(proxyUrl + encodeURIComponent(url), {
+                    headers: commonHeaders
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-        // Redirect after a delay (e.g., 3 seconds)
-        setTimeout(() => {
-            window.location.href = redirectUrl;
-        }, 3000); // 3000 milliseconds = 3 seconds
+                const data = await response.json();
+                return data.contents || data.response || data;
+            } catch (error) {
+                console.error(`Error with proxy ${proxyUrl}:`, error);
+                throw error;
+            }
+        }
+
+        async function fetchCarDetails() {
+            const targetUrl = `${BASE_URL}/fr/sidi_maarouf/voitures_d'occasion/BMW_S%C3%A9rie_4_Diesel_Automatique_2015_%C3%A0_Casablanca_${LIST_ID}.htm`;
+            
+            let lastError;
+            for (const proxy of CORS_PROXIES) {
+                try {
+                    const html = await tryFetchWithProxy(targetUrl, proxy);
+                    
+                    const scriptDataMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">(.*?)<\/script>/s);
+                    if (!scriptDataMatch) {
+                        throw new Error('Could not find listing data in the page');
+                    }
+
+                    const jsonData = JSON.parse(scriptDataMatch[1]);
+                    return jsonData.props.pageProps.initialReduxState.ad.view.adInfo;
+                } catch (error) {
+                    lastError = error;
+                    continue;
+                }
+            }
+            
+            throw new Error(`All proxies failed. Last error: ${lastError.message}`);
+        }
+
+        function renderCarDetails(data) {
+            const app = document.getElementById('app');
+            
+            const formatPrice = (price) => {
+                if (!price || !price.value) return 'Prix non disponible';
+                return new Intl.NumberFormat('fr-MA', {
+                    style: 'currency',
+                    currency:  'MAD'
+                }).format(price.value);
+            };
+
+            const renderParams = (params) => {
+                if (!params) return '';
+                let allParams = [
+                    ...(params.primary || []),
+                    ...(params.secondary || []),
+                ];
+                
+                return allParams.map(param => `
+                    <div class="car-info-item">
+                        <strong>${param.label}:</strong> ${param.value}
+                    </div>
+                `).join('');
+            };
+
+            const renderFeatures = (params) => {
+                if (!params || !params.extra) return '';
+                return params.extra.map(param => `
+                    <div class="feature-item">
+                        <strong>${param.label}</strong>
+                    </div>
+                `).join('');
+            };
+
+            const renderImages = (images) => {
+                if (!images || !images.length) return '';
+                return `
+                    <h2 class="section-title">Photos</h2>
+                    <div class="car-images">
+                        ${images.map(img => `
+                            <img class="car-image" src="${img.paths.standard}" alt="Car image" />
+                        `).join('')}
+                    </div>
+                `;
+            };
+
+            app.innerHTML = `
+                <div class="car-details">
+                    <h1>${data.subject}</h1>
+                    <div class="car-price">${formatPrice(data.price)}</div>
+                    
+                    ${renderImages(data.images)}
+
+                    <h2 class="section-title">Caractéristiques</h2>
+                    <div class="car-info">
+                        ${renderParams(data.params)}
+                    </div>
+
+                    <h2 class="section-title">Options et équipements</h2>
+                    <div class="features-grid">
+                        ${renderFeatures(data.params)}
+                    </div>
+
+                    <h2 class="section-title">Description</h2>
+                    <div class="car-description">${data.description}</div>
+
+                    <h2 class="section-title">Informations complémentaires</h2>
+                    <div class="contact-info">
+                        <div class="contact-info-item">
+                            <strong>Location:</strong> ${data.location.city.name}, ${data.location.area.name}
+                        </div>
+                        <div class="contact-info-item">
+                            <strong>Date de publication:</strong> ${new Date(data.listTime).toLocaleDateString('fr-FR')}
+                        </div>
+                        <div class="contact-info-item">
+                            <strong>Vendeur:</strong> ${data.seller.name}
+                        </div>
+                        ${data.seller.phone ? `
+                            <div class="contact-info-item">
+                                <strong>Téléphone:</strong> ${data.seller.phone}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function init() {
+            const app = document.getElementById('app');
+            app.innerHTML = '<div class="loading">Loading car details...</div>';
+            
+            try {
+                const carDetails = await fetchCarDetails();
+                if (carDetails) {
+                    renderCarDetails(carDetails);
+                }
+            } catch (error) {
+                app.innerHTML = `
+                    <div class="error">
+                        <h2>Failed to load car details</h2>
+                        <p>${error.message}</p>
+                        <button onclick="init()" class="retry-button">Retry</button>
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+
+        init();
     </script>
 </body>
 </html>
